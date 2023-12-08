@@ -34,16 +34,17 @@ end
 def pair?(s)
     s.chars.uniq.size == 4
 end
-fiveofakind  = proc(&:fiveofakind?)
-fourofakind  = proc(&:fourofakind?)
-fullhouse    = proc(&:fullhouse?)
-threeofakind = proc(&:threeofakind?)
-twopair      = proc(&:twopair?)
-pair         = proc(&:pair?)
+
 #input
 game=File.read('day07.txt').split("\n").map{|line| {:hand=>line.split[0],:bet=>line.split[1].to_i}}
 
 #part1
-#puts game.inspect
 game.each{|person| person[:handtype] = getrankfromhand(person[:hand])}
-game.map(&:to_a).sort_by{_1[0][1].tr("TJQKA","abcde")}.reverse.sort_by{|person| person[2][1]}.reverse.each{puts _1[0][1]}#.map.with_index{|person,i| person[1][1]*(i+1)}.sum
+puts game.map(&:to_a).sort_by{[8-_1[2][1],_1[0][1].tr("TJQKA","abcde")]}.map.with_index{|person,i| person[1][1]*(i+1)}.sum
+
+#part2
+game.each{|person| 
+    mostcard = (person[:hand].delete('J').chars.each_with_object(Hash.new(0)) { |v, h| h[v] += 1 }.max_by(&:last) or ['A']).first
+    person[:handtype] = getrankfromhand(person[:hand].tr('J',mostcard))}
+    puts game.map(&:to_a).sort_by{[8-_1[2][1],_1[0][1].tr("TJQKA","a0cde")]}.map.with_index{|person,i| person[1][1]*(i+1)
+}.sum
